@@ -1,38 +1,54 @@
 import React from "react";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx"
+import { Link } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+
+const tatooineImg = "https://upload.wikimedia.org/wikipedia/en/6/6d/Tatooine_%28fictional_desert_planet%29.jpg";
 
 export const Card = (props) => {
+    const { store, dispatch } = useGlobalReducer();
+    const isFavorite = store.favorites.some(fav => fav.name === props.name);
+    const type = props.nature || "people";
 
-    const { dispatch } = useGlobalReducer();
-        
     return (
-        <div className="card" style={{ width: "18rem" }}>
-            {/* Imagen temporal (luego pondremos la real) */}
+        <div className="card bg-dark text-white border-secondary" style={{ width: "18rem" }}>
             <img
-                src={`https://placehold.co/400x200?text=${props.name}`}
+                src={
+                    type === "planets" && props.uid == 1
+                        ? tatooineImg
+                        : `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/${type === "people" ? "characters" : type}/${props.uid}.jpg`
+                }
                 className="card-img-top"
                 alt={props.name}
+                onError={(e) => {
+                    e.target.src = `https://placehold.co/400x200?text=${props.name}`
+                }}
             />
 
             <div className="card-body">
-                {/* Aquí usamos la variable que nos manden */}
                 <h5 className="card-title">{props.name}</h5>
 
-                <p className="card-text">
-                    Aquí irán características como género, color de pelo, etc.
-                </p>
+                <div className="d-flex justify-content-between mt-3">
+                    <Link
+                        to={`/details/${type}/${props.uid}`}
+                        className="btn btn-outline-light"
+                    >
+                        Learn more!
+                    </Link>
 
-                <div className="d-flex justify-content-between">
-                    <button className="btn btn-outline-primary">Learn more!</button>
-                    <button className="btn btn-outline-warning"
+                    <button
+                        className={`btn ${isFavorite ? "btn-warning" : "btn-outline-warning"}`}
                         onClick={() => {
-                            dispatch({
-                                type: "add_favorite",
-                                payload: { name: props.name, uid: props.uid}
-                            });
+                            if (isFavorite) {
+                                const indexToDelete = store.favorites.findIndex(fav => fav.name === props.name);
+                                if (indexToDelete !== -1) {
+                                    dispatch({ type: "delete_favorite", payload: indexToDelete });
+                                }
+                            } else {
+                                dispatch({ type: "add_favorite", payload: { name: props.name, uid: props.uid } });
+                            }
                         }}
                     >
-                        <i className="fa fa-heart" />
+                        <i className={`fa-heart ${isFavorite ? "fas" : "far"}`} />
                     </button>
                 </div>
             </div>
