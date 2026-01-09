@@ -23,7 +23,6 @@ export const Details = () => {
             {detail ? (
                 <>
                     <h1 className="text-center mb-4 text-white">{detail.name}</h1>
-                    {/* AQUI EL CAMBIO: bg-dark text-white border-secondary */}
                     <div className="card mb-3 bg-dark text-white border-secondary">
                         <div className="row g-0">
                             <div className="col-md-5">
