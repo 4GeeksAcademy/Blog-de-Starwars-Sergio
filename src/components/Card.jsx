@@ -44,7 +44,13 @@ export const Card = (props) => {
                                     dispatch({ type: "delete_favorite", payload: indexToDelete });
                                 }
                             } else {
-                                dispatch({ type: "add_favorite", payload: { name: props.name, uid: props.uid } });
+                                dispatch({
+                                    type: "add_favorite", payload: {
+                                        name: props.name,
+                                        uid: props.uid,
+                                        type: type
+                                    }
+                                });
                             }
                         }}
                     >
